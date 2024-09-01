@@ -47,10 +47,23 @@ export default class ParseCommand extends AbstractPipelineElement {
   }
 
   removeMentions(messageContent: string): string {
-    return messageContent
-      .replace(MessageMentions.ChannelsPattern, "")
-      .replace(MessageMentions.EveryonePattern, "")
-      .replace(MessageMentions.RolesPattern, "")
-      .replace(MessageMentions.UsersPattern, "");
+    let patterns = [
+      MessageMentions.ChannelsPattern,
+      MessageMentions.EveryonePattern,
+      MessageMentions.RolesPattern,
+      MessageMentions.UsersPattern,
+    ];
+
+    let replaced;
+    do {
+      replaced = false;
+      for (let pattern of patterns) {
+        if (pattern.test(messageContent)) {
+          replaced = true;
+          messageContent = messageContent.replace(pattern, "");
+        }
+      }
+    } while (replaced);
+    return messageContent;
   }
 }
